@@ -18,10 +18,16 @@ npm install
 
 3. Create a `.env.local` with your Supabase credentials:
 
+Create a `.env.local` with your Supabase credentials. Never commit this file or paste your keys into public places.
+
+Example `.env.local` contents (replace with your values):
+
 ```
-NEXT_PUBLIC_SUPABASE_URL="https://..."
-NEXT_PUBLIC_SUPABASE_ANON_KEY="anon..."
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
 ```
+
+You can create this file locally and add it to `.gitignore` to avoid accidental commits.
 
 4. Run the development server:
 
@@ -33,3 +39,4 @@ Files of interest
 
 - App root and pages: [web-app/app](app)
 - Supabase client: [web-app/lib/supabaseClient.ts](lib/supabaseClient.ts)
+ - Example env: [web-app/.env.local.example](.env.local.example)
