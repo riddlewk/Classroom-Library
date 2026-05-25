@@ -1,0 +1,19 @@
+classroom-library/
+  docs/
+    01-product-vision.md
+    02-functional-requirements.md
+    03-nonfunctional-requirements.md
+    04-architecture.md
+    05-data-model.md
+    06-ux-ui-spec.md
+    07-isbn-integration.md
+    08-security-and-rls.md
+    09-project-plan.md
+  web-app/
+    package.json
+    src/
+      components/
+      pages/ or routes/
+      lib/supabaseClient.ts
+  .gitignore
+  README.md
