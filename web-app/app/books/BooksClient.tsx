@@ -37,8 +37,9 @@ export default function BooksClient() {
       }
 
       const { data, error } = await supabase
-        .from<Book>('books')
+        .from('books')
         .select('id, title, authors, cover_url, status, owner_user_id')
+        .eq('owner_user_id', id)
         .order('created_at', { ascending: false })
 
       if (!mounted) return
@@ -58,7 +59,11 @@ export default function BooksClient() {
       // refresh when auth changes
       if (id) {
         ;(async () => {
-          const { data } = await supabase.from<Book>('books').select('id, title, authors, cover_url, status, owner_user_id').order('created_at', { ascending: false })
+          const { data } = await supabase
+            .from('books')
+            .select('id, title, authors, cover_url, status, owner_user_id')
+            .eq('owner_user_id', id)
+            .order('created_at', { ascending: false })
           setBooks(data || [])
         })()
       } else {
@@ -70,7 +75,7 @@ export default function BooksClient() {
     const channel = supabase
       .channel('public:books')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, (payload) => {
-        const newRow = payload.record as Book
+        const newRow = ((payload as any).new ?? (payload as any).record) as Book
         // only update if it belongs to current user
         if (!userId) return
         if (newRow.owner_user_id !== userId) return
@@ -94,7 +99,8 @@ export default function BooksClient() {
   if (error) return <p className="text-sm text-red-600">Error: {error}</p>
 
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editFields, setEditFields] = useState<Partial<Book>>({})
+  type EditFields = { title?: string; authors?: string; cover_url?: string | null; status?: string | null }
+  const [editFields, setEditFields] = useState<EditFields>({})
   const [actionError, setActionError] = useState<string | null>(null)
 
   async function handleDelete(id: string) {
@@ -147,7 +153,7 @@ export default function BooksClient() {
 
   return (
     <div>
-      <NewBookForm />
+      <NewBookForm userId={userId} />
       {actionError && <p className="text-sm text-red-600">{actionError}</p>}
       {books.length === 0 ? (
         <p className="mt-2 text-sm text-gray-600">No books found.</p>

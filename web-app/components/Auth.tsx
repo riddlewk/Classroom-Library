@@ -10,10 +10,22 @@ export default function Auth() {
 
   useEffect(() => {
     let mounted = true
-    ;(async () => {
+
+    async function initAuth() {
+      if (typeof window !== 'undefined' && window.location.href.includes('access_token')) {
+        if (typeof (supabase.auth as any).getSessionFromUrl === 'function') {
+          const { error } = await (supabase.auth as any).getSessionFromUrl({ storeSession: true })
+          if (error) {
+            setMessage(error.message)
+          }
+        }
+      }
+
       const { data } = await supabase.auth.getUser()
       if (mounted) setUser(data.user ?? null)
-    })()
+    }
+
+    initAuth()
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
@@ -30,14 +42,24 @@ export default function Auth() {
 
   async function signIn() {
     setMessage('Sending sign-in link...')
-    const { error } = await supabase.auth.signInWithOtp({ email })
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : undefined,
+      },
+    })
     if (error) setMessage(error.message)
     else setMessage('Check your email for the sign-in link.')
   }
 
   async function signOut() {
-    await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      setMessage(error.message)
+      return
+    }
     setUser(null)
+    setMessage('Signed out.')
   }
 
   return (
