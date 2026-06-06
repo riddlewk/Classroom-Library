@@ -46,6 +46,12 @@ jobs:
         working-directory: web-app
         run: npx playwright install --with-deps
 
+      - name: Start app (background)
+        run: |
+          npm run start --prefix web-app &
+          npx wait-on http://localhost:3000
+        shell: bash
+
       - name: Playwright E2E (with ETA)
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
