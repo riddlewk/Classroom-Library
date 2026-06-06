@@ -1,3 +1,5 @@
+[![CI](https://github.com/riddlewk/Classroom-Library/actions/workflows/ci.yml/badge.svg)](https://github.com/riddlewk/Classroom-Library/actions/workflows/ci.yml)
+
 # Documentation
 
 All project requirements and planning documents are stored in the `docs/` directory.

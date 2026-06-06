@@ -1,5 +1,7 @@
 # Classroom Library — Web App (Next.js)
 
+[![CI](https://github.com/riddlewk/Classroom-Library/actions/workflows/ci.yml/badge.svg)](https://github.com/riddlewk/Classroom-Library/actions/workflows/ci.yml)
+
 This folder contains a minimal Next.js 14 app scaffold with Tailwind and a Supabase client setup.
 
 Quick start
