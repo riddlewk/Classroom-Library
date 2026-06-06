@@ -20,6 +20,12 @@ export default function BooksClient() {
   const [error, setError] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
 
+  // editing state hooks must be declared unconditionally to avoid hook order issues
+  const [editingId, setEditingId] = useState<string | null>(null)
+  type EditFields = { title?: string; authors?: string; cover_url?: string | null; status?: string | null }
+  const [editFields, setEditFields] = useState<EditFields>({})
+  const [actionError, setActionError] = useState<string | null>(null)
+
   useEffect(() => {
     let mounted = true
 
@@ -98,10 +104,6 @@ export default function BooksClient() {
   if (!userId) return <p className="text-sm text-gray-600">Sign in to see your books and add new ones.</p>
   if (error) return <p className="text-sm text-red-600">Error: {error}</p>
 
-  const [editingId, setEditingId] = useState<string | null>(null)
-  type EditFields = { title?: string; authors?: string; cover_url?: string | null; status?: string | null }
-  const [editFields, setEditFields] = useState<EditFields>({})
-  const [actionError, setActionError] = useState<string | null>(null)
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this book?')) return
