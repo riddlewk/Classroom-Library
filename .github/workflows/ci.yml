@@ -2,32 +2,51 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
   pull_request:
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 20
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: web-app/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('web-app/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
-        run: npm ci
-      - name: Run ESLint
-        run: npm run lint
-      - name: Type-check
-        run: npx tsc --noEmit
-      - name: Run unit tests
-        run: npm test
+        run: npm ci --prefix web-app
+
+      - name: Lint
+        run: npm run lint --prefix web-app
+        shell: bash
+
+      - name: Unit tests
+        run: npm run test:unit --prefix web-app
+        shell: bash
+
+      - name: Build (with ETA)
+        run: bash web-app/scripts/timed-run.sh 120 "npm run build --prefix web-app"
+        shell: bash
+
       - name: Install Playwright browsers
+        working-directory: web-app
         run: npx playwright install --with-deps
-      - name: Build and start app
-        run: |
-          npm run build
-          npm run start &
-          npx wait-on http://localhost:3000
-      - name: Run E2E tests
-        run: npm run test:e2e
+
+      - name: Playwright E2E (with ETA)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: bash web-app/scripts/timed-run.sh 120 "npm run test:e2e --prefix web-app"
+        shell: bash
