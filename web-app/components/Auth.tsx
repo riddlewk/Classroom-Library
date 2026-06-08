@@ -75,8 +75,9 @@ export default function Auth() {
       return
     }
     setMessage('Sending reset email...')
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : undefined)
     const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: typeof window !== 'undefined' ? window.location.origin + '/reset-password' : undefined,
+      redirectTo: appUrl ? appUrl + '/reset-password' : undefined,
     })
     if (error) setMessage(error.message)
     else {

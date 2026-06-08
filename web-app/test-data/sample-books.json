@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Charlotte's Web",
+    "authors": ["E. B. White"],
+    "isbn": "9780064400558",
+    "cover_url": null,
+    "status": "available",
+    "owner_user_id": "OWNER_USER_ID_PLACEHOLDER"
+  },
+  {
+    "title": "The Very Hungry Caterpillar",
+    "authors": ["Eric Carle"],
+    "isbn": "9780399226908",
+    "cover_url": null,
+    "status": "available",
+    "owner_user_id": "OWNER_USER_ID_PLACEHOLDER"
+  },
+  {
+    "title": "Matilda",
+    "authors": ["Roald Dahl"],
+    "isbn": "9780140328721",
+    "cover_url": null,
+    "status": "available",
+    "owner_user_id": "OWNER_USER_ID_PLACEHOLDER"
+  }
+]
